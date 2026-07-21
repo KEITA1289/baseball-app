@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI BASEBALL COACH</title>
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  background: #f5f7fa;
+  color: #172033;
+  padding-bottom: 80px;
+}
+.header {
+  background: linear-gradient(135deg, #101c36, #1d3566);
+  color: white;
+  padding: 28px 20px 32px;
+  border-radius: 0 0 28px 28px;
+}
+.header small {
+  opacity: .7;
+  font-size: 12px;
+}
+.header h1 {
+  font-size: 28px;
+  margin-top: 6px;
+}
+.header p {
+  margin-top: 8px;
+  opacity: .8;
+  font-size: 14px;
+}
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 10px 0 15px;
+}
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 22px 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.06);
+  cursor: pointer;
+  transition: .2s;
+}
+.card:active {
+  transform: scale(.97);
+}
+.card-icon {
+  font-size: 34px;
+  margin-bottom: 12px;
+}
+.card h3 {
+  font-size: 17px;
+}
+.card p {
+  color: #7b8494;
+  font-size: 12px;
+  margin-top: 7px;
+  line-height: 1.5;
+}
+.analysis-box {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 25px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.06);
+}
+.upload-area {
+  border: 2px dashed #b9c1ce;
+  border-radius: 18px;
+  padding: 30px 20px;
+  text-align: center;
+  margin-top: 15px;
+  cursor: pointer;
+}
+.upload-area:hover {
+  background: #f8faff;
+}
+.upload-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+input[type="file"] {
+  display: none;
+}
+.primary-btn {
+  width: 100%;
+  border: none;
+  background: #172d57;
+  color: white;
+  padding: 16px;
+  border-radius: 14px;
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.primary-btn:disabled {
+  background: #aeb6c3;
+}
+.result {
+  display: none;
+  margin-top: 25px;
+}
+.score-box {
+  background: linear-gradient(135deg, #172d57, #315da2);
+  color: white;
+  border-radius: 22px;
+  padding: 25px;
+  text-align: center;
+}
+.score {
+  font-size: 52px;
+  font-weight: 800;
+  margin: 10px 0;
+}
+.score-label {
+  opacity: .8;
+}
+.feedback {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  margin-top: 14px;
+  box-shadow: 0 5px 18px rgba(0,0,0,.05);
+}
+.feedback h3 {
+  margin-bottom: 12px;
+}
+.feedback li {
+  list-style: none;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.feedback li:last-child {
+  border-bottom: none;
+}
+.good {
+  color: #18864b;
+}
+.warning {
+  color: #d97706;
+}
+.training {
+  background: #eef4ff;
+  border-radius: 16px;
+  padding: 18px;
+  margin-top: 15px;
+}
+.training h3 {
+  margin-bottom: 10px;
+}
+.training p {
+  font-size: 14px;
+  line-height: 1.7;
+}
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: rgba(255,255,255,.96);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #e5e7eb;
+  z-index: 10;
+}
+.nav button {
+  border: none;
+  background: none;
+  color: #737b89;
+  font-size: 11px;
+  cursor: pointer;
+}
+.nav-icon {
+  display: block;
+  font-size: 22px;
+  margin-bottom: 3px;
+}
+.active {
+  color: #172d57 !important;
+  font-weight: bold;
+}
+.page {
+  display: none;
+}
+.page.active-page {
+  display: block;
+}
+.selected-file {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #315da2;
+  font-weight: bold;
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <small>AI BASEBALL COACH</small>
+  <h1>あなたの野球を、<br>AIでもっと強く。</h1>
+  <p>打撃・守備フォームをAIが分析し、改善ポイントと練習方法を提案します。</p>
+</header>
+<main class="container">
+<!-- HOME -->
+<div id="home" class="page active-page">
+  <h2 class="section-title">AI分析を始める</h2>
+  <div class="cards">
+<div class="card" onclick="openAnalysis('batting')">
+  <div class="card-icon">⚾</div>
+  <h3>打撃分析</h3>
+  <p>スイングフォームをAIが分析。改善点を見つけます。</p>
+</div>
+<div class="card" onclick="openAnalysis('fielding')">
+  <div class="card-icon">🧤</div>
+  <h3>守備分析</h3>
+  <p>捕球・足運び・送球動作をAIがチェックします。</p>
+</div>
+  </div>
+  <div class="analysis-box">
+    <h2 class="section-title">今日のAIコーチ</h2>
+<div class="feedback">
+  <h3>🔥 今日のおすすめ練習</h3>
+  <p style="line-height:1.7;font-size:14px;">
+    ティーバッティングを20球行い、インパクト時の頭の位置を意識しましょう。
+    フォームを動画撮影してAI分析すると、さらに詳しく改善できます。
+  </p>
+</div>
+  </div>
+</div>
+<!-- ANALYSIS -->
+<div id="analysis" class="page">
+  <h2 class="section-title" id="analysisTitle">打撃フォームAI分析</h2>
+  <div class="analysis-box">
+<p style="font-size:14px;line-height:1.6;">
+  練習動画をアップロードしてください。<br>
+  AIがフォームを分析して改善ポイントを提案します。
+</p>
+<label class="upload-area" for="videoInput">
+  <div class="upload-icon">🎥</div>
+  <strong>動画を選択</strong>
+  <p style="font-size:13px;color:#777;margin-top:8px;">
+    タップして動画をアップロード
+  </p>
+</label>
+<input type="file" id="videoInput" accept="video/*">
+<div id="fileName" class="selected-file"></div>
+<button id="analyzeBtn" class="primary-btn" onclick="analyzeVideo()" disabled>
+  AI分析を開始
+</button>
+  </div>
+  <div id="result" class="result">
+<div class="score-box">
+  <div class="score-label">AIフォームスコア</div>
+  <div class="score" id="score">82</div>
+  <div>GOOD FORM</div>
+</div>
+<div class="feedback">
+  <h3>🤖 AIコーチからのフィードバック</h3>
+  <ul id="feedbackList">
+  </ul>
+</div>
+<div class="training">
+  <h3>🏋️ おすすめ練習メニュー</h3>
+  <p id="trainingText"></p>
+</div>
+  </div>
+</div>
+<!-- PROFILE -->
+<div id="profile" class="page">
+  <h2 class="section-title">マイプロフィール</h2>
+  <div class="analysis-box">
+    <h3>選手情報</h3>
+<div style="margin-top:20px;">
+  <p style="color:#777;font-size:12px;">NAME</p>
+  <h3>YOUR NAME</h3>
+</div>
+<div style="margin-top:18px;">
+  <p style="color:#777;font-size:12px;">POSITION</p>
+  <h3>外野手</h3>
+</div>
+<div style="margin-top:18px;">
+  <p style="color:#777;font-size:12px;">AI ANALYSIS</p>
+  <h3>12回</h3>
+</div>
+  </div>
+</div>
+</main>
+<nav class="nav">
+  <button class="active" onclick="showPage('home', this)">
+    <span class="nav-icon">🏠</span>
+    ホーム
+  </button>
+  <button onclick="openAnalysis('batting')">
+    <span class="nav-icon">⚾</span>
+    打撃
+  </button>
+  <button onclick="openAnalysis('fielding')">
+    <span class="nav-icon">🧤</span>
+    守備
+  </button>
+  <button onclick="showPage('profile', this)">
+    <span class="nav-icon">👤</span>
+    マイページ
+  </button>
+</nav>
+<script>
+let analysisType = "batting";
+const videoInput = document.getElementById("videoInput");
+const fileName = document.getElementById("fileName");
+const analyzeBtn = document.getElementById("analyzeBtn");
+videoInput.addEventListener("change", function() {
+  if (this.files.length > 0) {
+    fileName.textContent = "📹 " + this.files[0].name;
+    analyzeBtn.disabled = false;
+  }
+});
+function openAnalysis(type) {
+  analysisType = type;
+  document.querySelectorAll(".page").forEach(page => {
+    page.classList.remove("active-page");
+  });
+  document.getElementById("analysis").classList.add("active-page");
+  if (type === "batting") {
+    document.getElementById("analysisTitle").textContent =
+      "⚾ 打撃フォームAI分析";
+  } else {
+    document.getElementById("analysisTitle").textContent =
+      "🧤 守備フォームAI分析";
+  }
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+function showPage(pageId, button) {
+  document.querySelectorAll(".page").forEach(page => {
+    page.classList.remove("active-page");
+  });
+  document.getElementById(pageId).classList.add("active-page");
+  document.querySelectorAll(".nav button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+  if (button) {
+    button.classList.add("active");
+  }
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+function analyzeVideo() {
+  analyzeBtn.disabled = true;
+  analyzeBtn.textContent = "AIが動画を分析中...";
+  setTimeout(function() {
+    document.getElementById("result").style.display = "block";
+    if (analysisType === "batting") {
+      document.getElementById("score").textContent = "82";
+      document.getElementById("feedbackList").innerHTML = `
+        <li class="good">✅ <strong>良い点：</strong>スイング開始時の下半身の動きが安定しています。</li>
+        <li class="good">✅ <strong>良い点：</strong>インパクトまでのバット軌道がスムーズです。</li>
+        <li class="warning">⚠️ <strong>改善点：</strong>インパクト時に頭が少し前に流れています。</li>
+        <li class="warning">⚠️ <strong>改善点：</strong>後ろ足から前足への体重移動をもう少し意識しましょう。</li>
+      `;
+      document.getElementById("trainingText").textContent =
+        "① ティーバッティング 20球 × 3セット\\n② 軸足を意識したスイング 10回 × 3セット\\n③ スローモーションスイングで頭の位置を確認";
+    } else {
+      document.getElementById("score").textContent = "76";
+      document.getElementById("feedbackList").innerHTML = `
+        <li class="good">✅ <strong>良い点：</strong>打球への一歩目の反応が速いです。</li>
+        <li class="good">✅ <strong>良い点：</strong>捕球姿勢が安定しています。</li>
+        <li class="warning">⚠️ <strong>改善点：</strong>捕球前の足の運びに無駄なステップがあります。</li>
+        <li class="warning">⚠️ <strong>改善点：</strong>送球動作への切り替えをさらに速くできます。</li>
+      `;
+      document.getElementById("trainingText").textContent =
+        "① ゴロ捕球 20球 × 3セット\\n② 捕球→送球動作 10回 × 3セット\\n③ 一歩目の反応トレーニング 5分";
+    }
+    analyzeBtn.disabled = false;
+    analyzeBtn.textContent = "もう一度AI分析する";
+    document.getElementById("result").scrollIntoView({
+      behavior: "smooth"
+    });
+  }, 1800);
+}
+</script>
+</body>
+</html>
