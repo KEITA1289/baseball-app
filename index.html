@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI BASEBALL COACH</title>
+<style>
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+}
+body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+  background: #f4f6f9;
+  color: #182236;
+  padding-bottom: 90px;
+}
+/* HEADER */
+.header {
+  background:
+    linear-gradient(
+      135deg,
+      #0b1833,
+      #1c3e78
+    );
+  color: white;
+  padding: 28px 20px 32px;
+  border-radius:
+    0 0 28px 28px;
+}
+.header-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  opacity: .7;
+}
+.header h1 {
+  font-size: 27px;
+  line-height: 1.3;
+  margin: 10px 0 0;
+}
+.header p {
+  font-size: 14px;
+  line-height: 1.7;
+  opacity: .82;
+  margin: 10px 0 0;
+}
+/* CONTAINER */
+.container {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+}
+/* PAGE SYSTEM */
+.page {
+  display: none;
+}
+.page.active {
+  display: block;
+}
+/* TITLES */
+.section-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 5px 0 16px;
+}
+/* HOME CATEGORY */
+.category-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.category-card {
+  border: 0;
+  width: 100%;
+  text-align: left;
+  background: white;
+  border-radius: 20px;
+  padding: 20px 16px;
+  box-shadow:
+    0 5px 18px
+    rgba(0,0,0,.06);
+  cursor: pointer;
+  color: #182236;
+}
+.category-card:active {
+  transform: scale(.98);
+}
+.category-icon {
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+.category-card h3 {
+  margin: 0;
+  font-size: 17px;
+}
+.category-card p {
+  margin: 7px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #7d8592;
+}
+/* AI COACH CARD */
+.coach-card {
+  background: white;
+  border-radius: 22px;
+  padding: 18px;
+  margin-top: 20px;
+  box-shadow:
+    0 5px 18px
+    rgba(0,0,0,.06);
+}
+.ai-message {
+  background: #eef3fb;
+  border-radius:
+    16px 16px 16px 5px;
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+/* INPUT */
+.input-wrapper {
+  width: 100%;
+  border: 1px solid #d9dfe8;
+  border-radius: 18px;
+  background: white;
+  padding: 8px;
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+}
+#userInput {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  max-height: 130px;
+  resize: vertical;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  padding: 10px;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #182236;
+}
+#userInput::placeholder {
+  color: #9aa2af;
+}
+/* BUTTONS */
+.icon-button {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 50%;
+  background: #edf1f7;
+  cursor: pointer;
+  font-size: 21px;
+}
+.icon-button:active {
+  transform: scale(.95);
+}
+.icon-button.listening {
+  background: #e53935;
+  color: white;
+}
+.send-button {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border: 0;
+  border-radius: 50%;
+  background: #173564;
+  color: white;
+  cursor: pointer;
+  font-size: 19px;
+}
+.send-button:active {
+  transform: scale(.95);
+}
+/* QUICK QUESTIONS */
+.quick-title {
+  font-size: 13px;
+  font-weight: bold;
+  margin: 20px 0 10px;
+}
+.quick-list {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 5px;
+}
+.quick-button {
+  flex: 0 0 auto;
+  border:
+    1px solid #dce2eb;
+  background: white;
+  border-radius: 30px;
+  padding: 10px 14px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #26334a;
+}
+/* BACK BUTTON */
+.back-button {
+  border: 0;
+  background: transparent;
+  color: #315da0;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 0;
+  margin-bottom: 15px;
+  cursor: pointer;
+}
+/* RESULT */
+.result {
+  display: none;
+  margin-top: 20px;
+}
+.result.show {
+  display: block;
+}
+.result-header {
+  background:
+    linear-gradient(
+      135deg,
+      #162d57,
+      #315da0
+    );
+  color: white;
+  border-radius: 20px;
+  padding: 21px;
+  margin-bottom: 14px;
+}
+.result-header h2 {
+  margin: 0 0 7px;
+  font-size: 19px;
+}
+.result-header p {
+  margin: 0;
+  font-size: 13px;
+  opacity: .8;
+}
+.result-card {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 14px;
+  box-shadow:
+    0 5px 18px
+    rgba(0,0,0,.05);
+}
+.result-card h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+.result-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.result-card li {
+  padding: 11px 0;
+  border-bottom:
+    1px solid #eee;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.result-card li:last-child {
+  border-bottom: 0;
+}
+.training-box {
+  background: #edf4ff;
+  border-radius: 15px;
+  padding: 16px;
+  font-size: 14px;
+  line-height: 1.8;
+}
+/* PROFILE */
+.profile-card {
+  background: white;
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow:
+    0 5px 18px
+    rgba(0,0,0,.06);
+}
+.profile-row {
+  padding: 16px 0;
+  border-bottom:
+    1px solid #eee;
+}
+.profile-row:last-child {
+  border-bottom: 0;
+}
+.profile-label {
+  font-size: 11px;
+  color: #8a929f;
+  margin-bottom: 5px;
+}
+.profile-value {
+  font-size: 16px;
+  font-weight: bold;
+}
+/* NAVIGATION */
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 72px;
+  background:
+    rgba(255,255,255,.98);
+  border-top:
+    1px solid #e5e7eb;
+  display: flex;
+  justify-content:
+    space-around;
+  align-items:
+    center;
+  z-index: 9999;
+}
+.nav-button {
+  border: 0;
+  background: transparent;
+  color: #858d9b;
+  cursor: pointer;
+  font-size: 11px;
+  min-width: 70px;
+  padding: 5px;
+}
+.nav-button.active {
+  color: #173564;
+  font-weight: bold;
+}
+.nav-icon {
+  display: block;
+  font-size: 22px;
+  margin-bottom: 3px;
+}
+/* MOBILE */
+@media (max-width: 420px) {
+  .container {
+    padding: 16px;
+  }
+  .header {
+    padding:
+      25px 18px 30px;
+  }
+  .header h1 {
+    font-size: 25px;
+  }
+}
+</style>
+</head>
+<body>
+<!-- HEADER -->
+<header class="header">
+  <div class="header-label">
+    AI BASEBALL COACH
+  </div>
+  <h1>
+    あなたの野球を、<br>
+    AIでもっと強く。
+  </h1>
+  <p>
+    野球の悩みをAIコーチに相談して、
+    あなたに合った改善方法を見つけよう。
+  </p>
+</header>
+<main class="container">
+<!-- ================= HOME ================= -->
+<section
+  id="homePage"
+  class="page active"
+>
+  <h2 class="section-title">
+    何を相談しますか？
+  </h2>
+  <div class="category-grid">
+<button
+  type="button"
+  class="category-card"
+  onclick="openCoach('batting')"
+>
+  <div class="category-icon">
+    ⚾
+  </div>
+  <h3>
+    打撃
+  </h3>
+  <p>
+    スイング・タイミング・打球の悩み
+  </p>
+</button>
+<button
+  type="button"
+  class="category-card"
+  onclick="openCoach('fielding')"
+>
+  <div class="category-icon">
+    🧤
+  </div>
+  <h3>
+    守備
+  </h3>
+  <p>
+    捕球・送球・一歩目の悩み
+  </p>
+</button>
+<button
+  type="button"
+  class="category-card"
+  onclick="openCoach('mental')"
+>
+  <div class="category-icon">
+    🧠
+  </div>
+  <h3>
+    メンタル
+  </h3>
+  <p>
+    緊張・プレッシャー・自信の悩み
+  </p>
+</button>
+<button
+  type="button"
+  class="category-card"
+  onclick="openCoach('training')"
+>
+  <div class="category-icon">
+    🏋️
+  </div>
+  <h3>
+    練習方法
+  </h3>
+  <p>
+    何を練習すればいいか分からない
+  </p>
+</button>
+  </div>
+  <div class="coach-card">
+<div class="ai-message">
+  🤖 <strong>AIコーチ</strong><br>
+  こんにちは！<br>
+  野球について何でも相談してください。<br>
+  文字入力でも、🎙️音声入力でもOKです。
+</div>
+  </div>
+</section>
+<!-- ================= COACH ================= -->
+<section
+  id="coachPage"
+  class="page"
+>
+
+<button
+type=“button”
+class=“back-button”
+onclick=“goHome()”
+
+← ホームに戻る
+  </button>
+  <h2
+    id="coachTitle"
+    class="section-title"
+  >
+    🤖 AIコーチに相談
+  </h2>
+  <div class="coach-card">
+<div class="ai-message">
+  🤖 <strong>AIコーチ</strong><br>
+  あなたの野球の悩みを教えてください。<br>
+  できるだけ具体的に話してもらえると、
+  より詳しくアドバイスできます。
+</div>
+<!-- INPUT -->
+<div class="input-wrapper">
+  <textarea
+    id="userInput"
+    placeholder="例：最近、外角の球を打つとファーストゴロになります"
+  ></textarea>
+  <button
+    type="button"
+    id="micButton"
+    class="icon-button"
+    onclick="toggleVoice()"
+  >
+    🎙️
+  </button>
+  <button
+    type="button"
+    class="send-button"
+    onclick="analyzeQuestion()"
+  >
+    ➤
+  </button>
+</div>
+<!-- VOICE STATUS -->
+<div
+  id="voiceStatus"
+  style="
+    display:none;
+    margin-top:10px;
+    color:#e53935;
+    font-size:13px;
+    font-weight:bold;
+  "
+>
+  🔴 音声を聞いています…もう一度押すと停止
+</div>
+<!-- QUICK -->
+<div class="quick-title">
+  よくある相談
+</div>
+<div class="quick-list">
+  <button
+    type="button"
+    class="quick-button"
+    onclick="setQuestion('最近、打球が全然飛びません')"
+  >
+    打球が飛ばない
+  </button>
+  <button
+    type="button"
+    class="quick-button"
+    onclick="setQuestion('変化球が全然打てません')"
+  >
+    変化球が打てない
+  </button>
+  <button
+    type="button"
+    class="quick-button"
+    onclick="setQuestion('三振が多くて困っています')"
+  >
+    三振が多い
+  </button>
+  <button
+    type="button"
+    class="quick-button"
+    onclick="setQuestion('守備でエラーが多いです')"
+  >
+    エラーが多い
+  </button>
+  <button
+    type="button"
+    class="quick-button"
+    onclick="setQuestion('守備の一歩目が遅いです')"
+  >
+    一歩目が遅い
+  </button>
+</div>
+  </div>
+  <!-- RESULT -->
+  <div
+    id="resultArea"
+    class="result"
+  >
+<div class="result-header">
+  <h2>
+    🤖 AIコーチ分析
+  </h2>
+  <p>
+    あなたの相談内容から考えられる原因と改善方法
+  </p>
+</div>
+<div class="result-card">
+  <h3>
+    🔍 考えられる原因
+  </h3>
+  <ul id="causeList"></ul>
+</div>
+<div class="result-card">
+  <h3>
+    💡 改善ポイント
+  </h3>
+  <ul id="improvementList"></ul>
+</div>
+<div class="result-card">
+  <h3>
+    🏋️ 今日のおすすめ練習
+  </h3>
+  <div
+    id="trainingResult"
+    class="training-box"
+  ></div>
+</div>
+  </div>
+</section>
+<!-- ================= PROFILE ================= -->
+<section
+  id="profilePage"
+  class="page"
+>
+  <h2 class="section-title">
+    マイページ
+  </h2>
+  <div class="profile-card">
+<div class="profile-row">
+  <div class="profile-label">
+    PLAYER
+  </div>
+  <div class="profile-value">
+    YOUR NAME
+  </div>
+</div>
+<div class="profile-row">
+  <div class="profile-label">
+    POSITION
+  </div>
+  <div class="profile-value">
+    外野手
+  </div>
+</div>
+<div class="profile-row">
+  <div class="profile-label">
+    AI COACHING
+  </div>
+  <div class="profile-value">
+    0回
+  </div>
+</div>
+  </div>
+</section>
+</main>
+<!-- ================= NAV ================= -->
+<nav class="bottom-nav">
+
+<button
+type=“button”
+id=“homeNav”
+class=“nav-button active”
+onclick=“navigate(‘home’)”
+
+  <span class="nav-icon">
+    🏠
+  </span>
+
+ホーム
+
+</button>
+
+<button
+type=“button”
+id=“coachNav”
+class=“nav-button”
+onclick=“navigate(‘coach’)”
+
+  <span class="nav-icon">
+    🤖
+  </span>
+
+AIコーチ
+
+</button>
+
+<button
+type=“button”
+id=“profileNav”
+class=“nav-button”
+onclick=“navigate(‘profile’)”
+
+  <span class="nav-icon">
+    👤
+  </span>
+
+マイページ
+
+</button>
+</nav>
+<script>
+/* =========================
+   GLOBAL STATE
+========================= */
+let currentType = "general";
+let recognition = null;
+let isListening = false;
+/* =========================
+   PAGE NAVIGATION
+========================= */
+function navigate(page) {
+  const pages = {
+    home:
+      document.getElementById(
+        "homePage"
+      ),
+    coach:
+      document.getElementById(
+        "coachPage"
+      ),
+    profile:
+      document.getElementById(
+        "profilePage"
+      )
+  };
+  Object
+    .values(pages)
+    .forEach(
+      pageElement => {
+        pageElement
+          .classList
+          .remove(
+            "active"
+          );
+      }
+    );
+  pages[page]
+    .classList
+    .add(
+      "active"
+    );
+  document
+    .querySelectorAll(
+      ".nav-button"
+    )
+    .forEach(
+      button => {
+        button
+          .classList
+          .remove(
+            "active"
+          );
+      }
+    );
+  if(page === "home") {
+    document
+      .getElementById(
+        "homeNav"
+      )
+      .classList
+      .add(
+        "active"
+      );
+  }
+  if(page === "coach") {
+    document
+      .getElementById(
+        "coachNav"
+      )
+      .classList
+      .add(
+        "active"
+      );
+  }
+  if(page === "profile") {
+    document
+      .getElementById(
+        "profileNav"
+      )
+      .classList
+      .add(
+        "active"
+      );
+  }
+  window.scrollTo(
+    {
+      top: 0,
+      behavior: "smooth"
+    }
+  );
+}
+/* =========================
+   HOME
+========================= */
+function goHome() {
+  stopVoice();
+  navigate(
+    "home"
+  );
+}
+/* =========================
+   OPEN COACH
+========================= */
+function openCoach(type) {
+  currentType =
+    type;
+  const titles = {
+    batting:
+      "⚾ 打撃AIコーチ",
+    fielding:
+      "🧤 守備AIコーチ",
+    mental:
+      "🧠 メンタルAIコーチ",
+    training:
+      "🏋️ 練習AIコーチ",
+    general:
+      "🤖 AIコーチに相談"
+  };
+  document
+    .getElementById(
+      "coachTitle"
+    )
+    .textContent =
+    titles[type]
+    ||
+    titles.general;
+  document
+    .getElementById(
+      "resultArea"
+    )
+    .classList
+    .remove(
+      "show"
+    );
+  navigate(
+    "coach"
+  );
+}
+/* =========================
+   SET QUESTION
+========================= */
+function setQuestion(
+  question
+) {
+  const input =
+    document
+      .getElementById(
+        "userInput"
+      );
+  input.value =
+    question;
+  input.focus();
+}
+/* =========================
+   ANALYZE
+========================= */
+function analyzeQuestion() {
+  const input =
+    document
+      .getElementById(
+        "userInput"
+      );
+  const text =
+    input
+      .value
+      .trim();
+  if(!text) {
+    alert(
+      "野球の悩みを入力してください。"
+    );
+    input.focus();
+    return;
+  }
+  let causes = [];
+  let improvements = [];
+  let training = "";
+  /* BATTING */
+  if(
+    text.includes("飛ばない") ||
+    text.includes("打球")
+  ) {
+    causes = [
+      "インパクト時に力がボールへ伝わりきっていない可能性があります。",
+      "上半身だけでスイングしている可能性があります。",
+      "下半身から上半身への連動を改善できる可能性があります。"
+    ];
+    improvements = [
+      "インパクトまで頭の位置を安定させる。",
+      "下半身から始動して、骨盤の回転を意識する。",
+      "腕だけで振らず、身体全体でスイングする。"
+    ];
+    training =
+      "① ティーバッティング 30球<br>" +
+      "② 逆方向への打撃 20球<br>" +
+      "③ 下半身主導スイング 10回 × 3セット";
+  }
+  else if(
+    text.includes("変化球")
+  ) {
+    causes = [
+      "変化球に対して始動が早くなっている可能性があります。",
+      "ボールを長く見る準備ができていない可能性があります。",
+      "速球と変化球で同じタイミングで始動している可能性があります。"
+    ];
+    improvements = [
+      "始動を少し遅らせてボールを長く見る。",
+      "投手の腕の振りから球種を判断する意識を持つ。",
+      "変化球を打つときは逆方向を意識する。"
+    ];
+    training =
+      "① 遅いボール打ち 20球<br>" +
+      "② 変化球対応ティー 20球<br>" +
+      "③ 逆方向打撃 20球";
+  }
+  else if(
+    text.includes("三振")
+  ) {
+    causes = [
+      "2ストライク後の狙い球が明確になっていない可能性があります。",
+      "ストライクゾーンを広く捉えすぎている可能性があります。",
+      "追い込まれた後も同じスイングを続けている可能性があります。"
+    ];
+    improvements = [
+      "2ストライク後はミート重視に切り替える。",
+      "自分が打てるゾーンを明確にする。",
+      "追い込まれたらコンパクトなスイングを意識する。"
+    ];
+    training =
+      "① 2ストライク想定打撃 20球<br>" +
+      "② ミートポイント練習 30球<br>" +
+      "③ 実戦カウント打撃 10打席";
+  }
+  /* FIELDING */
+  else if(
+    text.includes("エラー") ||
+    text.includes("守備") ||
+    text.includes("一歩目")
+  ) {
+    causes = [
+      "打球への反応から最初の一歩までに時間がかかっている可能性があります。",
+      "捕球時に身体が浮いてしまっている可能性があります。",
+      "捕球を急ぐことで足が止まっている可能性があります。"
+    ];
+    improvements = [
+      "打球音を聞いた瞬間に最初の一歩を出す意識を持つ。",
+      "低い姿勢を維持してボールに入る。",
+      "捕球→ステップ→送球のリズムを一定にする。"
+    ];
+    training =
+      "① 一歩目反応ドリル 5分<br>" +
+      "② 正面ゴロ捕球 30球<br>" +
+      "③ 捕球→送球 15回 × 2セット";
+  }
+  /* DEFAULT */
+  else {
+    causes = [
+      "現在の情報だけでは原因を一つに絞ることができません。",
+      "プレーの状況をもう少し詳しく教えてもらえると、より正確に分析できます。"
+    ];
+    improvements = [
+      "どんな場面で問題が起きるのか記録してみましょう。",
+      "得意なプレーと苦手なプレーを整理しましょう。",
+      "次回の練習で感じたことを具体的にAIコーチへ相談してください。"
+    ];
+    training =
+      "次回の練習で気になったプレーを3つ記録してください。<br>" +
+      "その内容をAIコーチに相談すると、より具体的な練習方法を考えられます。";
+  }
+  document
+    .getElementById(
+      "causeList"
+    )
+    .innerHTML =
+    causes
+      .map(
+        item =>
+        "<li>⚠️ " +
+        item +
+        "</li>"
+      )
+      .join("");
+  document
+    .getElementById(
+      "improvementList"
+    )
+    .innerHTML =
+    improvements
+      .map(
+        item =>
+        "<li>✅ " +
+        item +
+        "</li>"
+      )
+      .join("");
+  document
+    .getElementById(
+      "trainingResult"
+    )
+    .innerHTML =
+    training;
+  document
+    .getElementById(
+      "resultArea"
+    )
+    .classList
+    .add(
+      "show"
+    );
+  document
+    .getElementById(
+      "resultArea"
+    )
+    .scrollIntoView(
+      {
+        behavior:
+          "smooth",
+        block:
+          "start"
+      }
+    );
+}
+/* =========================
+   VOICE RECOGNITION
+========================= */
+function toggleVoice() {
+  if(isListening) {
+    stopVoice();
+    return;
+  }
+  startVoice();
+}
+function startVoice() {
+  const SpeechRecognition =
+    window.SpeechRecognition
+    ||
+    window.webkitSpeechRecognition;
+  if(!SpeechRecognition) {
+    alert(
+      "このブラウザでは音声認識に対応していません。iPhoneのSafariなど、対応ブラウザで試してください。"
+    );
+    return;
+  }
+  recognition =
+    new SpeechRecognition();
+  recognition.lang =
+    "ja-JP";
+  recognition.continuous =
+    true;
+  recognition.interimResults =
+    true;
+  isListening =
+    true;
+  const micButton =
+    document
+      .getElementById(
+        "micButton"
+      );
+  const voiceStatus =
+    document
+      .getElementById(
+        "voiceStatus"
+      );
+  micButton
+    .classList
+    .add(
+      "listening"
+    );
+  micButton.textContent =
+    "⏹️";
+  voiceStatus.style.display =
+    "block";
+  try {
+    recognition.start();
+  }
+  catch(error) {
+    console.log(
+      error
+    );
+  }
+  recognition.onresult =
+  function(event) {
+    let transcript =
+      "";
+    for(
+      let i =
+        event.resultIndex;
+      i <
+        event.results.length;
+      i++
+    ) {
+      transcript +=
+        event
+          .results[i][0]
+          .transcript;
+    }
+    document
+      .getElementById(
+        "userInput"
+      )
+      .value =
+      transcript;
+  };
+  recognition.onerror =
+  function(event) {
+    console.log(
+      "Speech error:",
+      event.error
+    );
+    stopVoice();
+  };
+  recognition.onend =
+  function() {
+    if(isListening) {
+      try {
+        recognition.start();
+      }
+      catch(error) {
+        stopVoice();
+      }
+    }
+  };
+}
+function stopVoice() {
+  isListening =
+    false;
+  const micButton =
+    document
+      .getElementById(
+        "micButton"
+      );
+  const voiceStatus =
+    document
+      .getElementById(
+        "voiceStatus"
+      );
+  micButton
+    .classList
+    .remove(
+      "listening"
+    );
+  micButton.textContent =
+    "🎙️";
+  voiceStatus.style.display =
+    "none";
+  if(recognition) {
+    try {
+      recognition.stop();
+    }
+    catch(error) {
+      console.log(
+        error
+      );
+    }
+  }
+  recognition =
+    null;
+}
+/* =========================
+   KEYBOARD
+========================= */
+document
+  .getElementById(
+    "userInput"
+  )
+  .addEventListener(
+    "keydown",
+    function(event) {
+      if(
+        event.key ===
+        "Enter"
+        &&
+        !event.shiftKey
+      ) {
+        event.preventDefault();
+        analyzeQuestion();
+      }
+    }
+  );
+</script>
+</body>
+</html>
