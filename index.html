@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baseball App</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+      background: #f4f6f8;
+      color: #222;
+    }
+    header {
+      background: #0b1f3a;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+    header p {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .score-card {
+      background: white;
+      border-radius: 18px;
+      padding: 25px 20px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .game-status {
+      color: #e63946;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .teams {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin: 20px 0;
+    }
+    .team {
+      width: 40%;
+    }
+    .team-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .score {
+      font-size: 48px;
+      font-weight: bold;
+      color: #0b1f3a;
+    }
+    .vs {
+      font-size: 16px;
+      color: #888;
+    }
+    .inning {
+      border-top: 1px solid #eee;
+      padding-top: 15px;
+      color: #666;
+      font-size: 14px;
+    }
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    .menu button {
+      border: none;
+      background: white;
+      padding: 22px 10px;
+      border-radius: 15px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      transition: 0.2s;
+    }
+    .menu button:hover {
+      transform: translateY(-2px);
+    }
+    .news {
+      background: white;
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 18px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+    }
+    .news h2 {
+      font-size: 18px;
+      margin-bottom: 15px;
+    }
+    .news-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+    .news-item:last-child {
+      border-bottom: none;
+    }
+    @media (max-width: 500px) {
+      .team-name {
+        font-size: 15px;
+      }
+      .score {
+        font-size: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>⚾ BASEBALL APP</h1>
+    <p>野球をもっと楽しく、もっと身近に</p>
+  </header>
+  <main class="container">
+<section class="score-card">
+  <div class="game-status">● LIVE</div>
+  <div class="teams">
+    <div class="team">
+      <div class="team-name">HOME</div>
+      <div class="score" id="homeScore">3</div>
+    </div>
+    <div class="vs">VS</div>
+    <div class="team">
+      <div class="team-name">AWAY</div>
+      <div class="score" id="awayScore">2</div>
+    </div>
+  </div>
+  <div class="inning">
+    7回表
+  </div>
+</section>
+<section class="menu">
+  <button onclick="showMessage('試合情報')">⚾ 試合情報</button>
+  <button onclick="showMessage('選手一覧')">👤 選手一覧</button>
+  <button onclick="showMessage('ランキング')">🏆 ランキング</button>
+  <button onclick="showMessage('ニュース')">📰 ニュース</button>
+</section>
+<section class="news">
+  <h2>最新ニュース</h2>
+  <div class="news-item">
+    ⚾ 今日の試合結果をチェック
+  </div>
+  <div class="news-item">
+    🔥 注目選手の最新情報
+  </div>
+  <div class="news-item">
+    🏆 最新ランキングを更新
+  </div>
+</section>
+  </main>
+  <script>
+    function showMessage(menu) {
+      alert(menu + "を選択しました！");
+    }
+  </script>
+</body>
+</html>
